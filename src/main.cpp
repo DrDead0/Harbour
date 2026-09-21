@@ -7,86 +7,149 @@ using namespace std;
 class Project {
 
 private:
-  string name;
-  string language;
-  string type;
+    string name;
+    string language;
+    string type;
 
 public:
-  Project(string projectName, string projectLanguage, string projectType) {
-    name = projectName;
-    language = projectLanguage;
-    type = projectType;
-  }
+    Project(string projectName,
+            string projectLanguage,
+            string projectType) {
 
-  string getName() const { return name; }
+        name = projectName;
+        language = projectLanguage;
+        type = projectType;
 
-  string getLanguage() const { return language; }
+        cout << "[CREATE] " << name << endl;
+    }
 
-  string getType() const { return type; }
+    ~Project() {
+        cout << "[DESTROY] " << name << endl;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    string getLanguage() const {
+        return language;
+    }
+
+    string getType() const {
+        return type;
+    }
 };
+
 
 class ProjectManager {
 
 private:
-  vector<Project> projects;
+    vector<Project> projects;
 
 public:
-  void addProject(const Project &project) { projects.push_back(project); }
-
-  void listProjects() {
-
-    for (const Project &project : projects) {
-
-      cout << project.getName() << endl;
-    }
-  }
-
-  int getProjectCount() { return projects.size(); }
-
-  Project *findProject(const string &projectName) {
-
-    for (Project &project : projects) {
-
-      if (project.getName() == projectName) {
-
-        return &project;
-      }
+    void addProject(const Project& project) {
+        projects.push_back(project);
     }
 
-    return nullptr;
-  }
+    void listProjects() {
+
+        for (const Project& project : projects) {
+            cout << project.getName() << endl;
+        }
+    }
+
+    int getProjectCount() {
+        return projects.size();
+    }
+
+    Project* findProject(const string& projectName) {
+
+        for (Project& project : projects) {
+
+            if (project.getName() == projectName) {
+                return &project;
+            }
+        }
+
+        return nullptr;
+    }
 };
+
 
 int main() {
 
-  ProjectManager manager;
+    cout << "===== OBJECT LIFETIME DEMO =====" << endl;
 
-  Project bookCli("Book_CLI", "C++", "CLI");
-  Project zeroAxiis("ZeroAxiis", "Go", "Backend");
-  Project harbor("Harbor", "C++", "Desktop");
+    {
+        Project temporaryProject(
+            "LifetimeDemo",
+            "C++",
+            "Learning"
+        );
 
-  manager.addProject(bookCli);
-  manager.addProject(zeroAxiis);
-  manager.addProject(harbor);
+        cout << "Inside scope: "
+             << temporaryProject.getName()
+             << endl;
+    }
 
-  manager.listProjects();
+    cout << "LifetimeDemo scope has ended."
+         << endl;
 
-  cout << "Total projects: " << manager.getProjectCount() << endl;
+    cout << endl;
+    cout << "===== HARBOR =====" << endl;
 
-  Project *foundProject = manager.findProject("Harbor");
+    ProjectManager manager;
 
-  if (foundProject != nullptr) {
+    Project bookCli(
+        "Book_CLI",
+        "C++",
+        "CLI"
+    );
 
-    cout << "Found project: " << foundProject->getName() << endl;
+    Project zeroAxiis(
+        "ZeroAxiis",
+        "Go",
+        "Backend"
+    );
 
-    cout << "Language: " << foundProject->getLanguage() << endl;
+    Project harbor(
+        "Harbor",
+        "C++",
+        "Desktop"
+    );
 
-    cout << "Type: " << foundProject->getType() << endl;
+    manager.addProject(bookCli);
+    manager.addProject(zeroAxiis);
+    manager.addProject(harbor);
 
-  } else {
+    manager.listProjects();
 
-    cout << "Project not found." << endl;
-  }
+    cout << "Total projects: "
+         << manager.getProjectCount()
+         << endl;
 
-  return 0;
+    Project* foundProject =
+        manager.findProject("Harbor");
+
+    if (foundProject != nullptr) {
+
+        cout << "Found project: "
+             << foundProject->getName()
+             << endl;
+
+        cout << "Language: "
+             << foundProject->getLanguage()
+             << endl;
+
+        cout << "Type: "
+             << foundProject->getType()
+             << endl;
+
+    } else {
+
+        cout << "Project not found."
+             << endl;
+    }
+
+    return 0;
 }
